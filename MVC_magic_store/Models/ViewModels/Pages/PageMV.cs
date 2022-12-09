@@ -11,10 +11,10 @@ namespace MVC_magic_store.Models.ViewModels.Pages
     /// <summary>
     /// Получает от DTO все данные и в конструукторе присваивает значения моделе которая пойдет на представление
     /// </summary>
-    public class PageMV
+    public class PageVM
     {
-        public PageMV() { } // конструктор класса по умолчанию
-        public PageMV(PagesDTO row) { // конструктор класса который будет присваивать моделе значения из pagesDTO 
+        public PageVM() { } // конструктор класса по умолчанию
+        public PageVM(PagesDTO row) { // конструктор класса который будет присваивать моделе значения из pagesDTO 
             Id = row.Id;
             Title= row.Title;
             Slug= row.Slug;
