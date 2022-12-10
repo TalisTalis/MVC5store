@@ -114,7 +114,7 @@ namespace MVC_magic_store.Areas.Admin.Controllers
             return RedirectToAction("Index");
         }
 
-        // GET: Admin/Pages/EditPage
+        // GET: Admin/Pages/EditPage/Id
         [HttpGet]
         public ActionResult EditPage(int id)
         {
@@ -230,6 +230,38 @@ namespace MVC_magic_store.Areas.Admin.Controllers
 
             // Переадресация туда откуда пользователь редактировал страницу
             return RedirectToAction("EditPage"); // переадресация на GET метод EditPage
+        }
+
+        // GET: Admin/Pages/PageDetails/Id
+        [HttpGet]
+        public ActionResult PageDetails(int id)
+        {
+            // план:
+            // объявим модель данных PageVM
+            // проверяем доступна ли страница
+            // присвоить модели информацию из БД
+            // вернуть модель в представление
+
+            // Объявить модель
+            PageVM model;
+
+            // открытие подключения к БД
+            using(DB db = new DB())
+            {
+                // получение страницы из БД по id
+                PagesDTO dto = db.Pages.Find(id);
+
+                if (dto == null)
+                {
+                    return Content("This page does not eexist.");
+                }
+
+                // Присваиваем модели информацию из БД
+                model = new PageVM(dto);
+            }
+
+            // возвращение модели
+            return View(model);
         }
     }
 }
