@@ -10,5 +10,9 @@ namespace MVC_magic_store.Models.Data
     {                   
         // проложить мостик от базы данных к модели к сущности
         public DbSet<PagesDTO> Pages { get; set; } // сбор информации из pagesDTO
+
+        // связать модель sidebarDTO с БД
+        public DbSet<SidebarDTO> Sidebars { get; set; } // сбор информации из sidebarDTO
+
     }
 }

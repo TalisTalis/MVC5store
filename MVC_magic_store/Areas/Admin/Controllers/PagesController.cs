@@ -324,5 +324,61 @@ namespace MVC_magic_store.Areas.Admin.Controllers
                 }
             }
         }
+
+        // GET: Admin/Pages/EditSidebar
+        [HttpGet]
+        public ActionResult EditSidebar()
+        {
+            // план:
+            // объявляем модель инициализируем
+            // получить данные из БД DTO
+            // заполнить модель данными
+            // вернуть представление с моделью
+
+            // Объявление модели
+            SidebarVM model;
+
+            // Подключение к БД
+            using(DB db = new DB())
+            {
+                // Получение данных из DTO
+                SidebarDTO dto = db.Sidebars.Find(1); // нельзя задавать жёсткие значения. Это пока 1 для примера
+
+                // Присвоить полученные данные из БД модели
+                model = new SidebarVM(dto);
+            }
+
+            // Возвращение представления с моделью
+            return View(model);
+        }
+        // POST: Admin/Pages/EditSidebar
+        [HttpPost]
+        public ActionResult EditSidebar(SidebarVM model)
+        {
+            // план:
+            // получить данные из БД DTO
+            // присвоить данные в тело (в свойства Body)
+            // Сохранить в БД
+            // Оповестить пользователя через TempData
+            // переадресация на Sidebar
+
+            // Открываем подключение к БД
+            using (DB db = new DB())
+            {
+                // Получение данных из БД
+                SidebarDTO dto = db.Sidebars.Find(1); // нельзя жестко писать
+
+                // Присваиваем данные в модель. Из представления в dto (изменения)
+                dto.Body = model.Body;
+
+                // Сохранение в БД
+                db.SaveChanges();
+            }
+            // Сообщение пользователю о сохранении изменений через TempData
+            TempData["SM"] = "You have edited sidebar.";
+
+            // Переаадресация на GET метод EditSidebar
+            return RedirectToAction("EditSidebar");
+        }
     }
 }
