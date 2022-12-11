@@ -3,6 +3,7 @@ using MVC_magic_store.Models.ViewModels.Pages;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Web;
@@ -291,6 +292,37 @@ namespace MVC_magic_store.Areas.Admin.Controllers
 
             // Переадресация на главную страницу
             return RedirectToAction("Index");
+        }
+
+        // метод сортировки страниц
+        // POST: Admin/Pages/ReorderPages
+        [HttpPost]
+        public void ReorderPages(int[] id)
+        {
+            // план:
+            // создаем счетчик count 
+            // инициализируем модель данных
+            // устанавливаем сортировку ддля каждой страницы (в БД есть метод Sorting)
+
+            // Открываем подключение к БД
+            using (DB db = new DB())
+            {
+                int count = 1; // home по умолчанию равен 0, поэтому отсчёт начинается с 1
+
+                // инициализируем модель данных
+                PagesDTO dto;
+
+                // Сортировка страниц
+                foreach (var pageId in id)
+                {
+                    dto = db.Pages.Find(pageId); // ищем элемент по id
+                    dto.Sorting = count; // присваиваем текущему элементу Sorting 1
+
+                    db.SaveChanges(); // сохраняем изменения
+
+                    count++;
+                }
+            }
         }
     }
 }
