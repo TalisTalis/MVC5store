@@ -14,7 +14,7 @@
 }
 
 <p>
-    @Html.ActionLink("Create New Page", "AddPage", "", new {@class = "btn btn-success"})
+    @Html.ActionLink("Create New Page", "AddPage", "", new { @class = "btn btn-success" })
 </p>
 <table class="table">
     <tr>
@@ -30,23 +30,42 @@
         <th></th>
     </tr>
 
-@foreach (var item in Model) {
-    <tr>
-        <td>
-            @Html.DisplayFor(modelItem => item.Title)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.Slug)
-        </td>
-        <td>
-            @Html.DisplayFor(modelItem => item.HasSideBar)
-        </td>
-        <td>
-            @Html.ActionLink("Edit", "EditPage", new { id=item.Id }) |
-            @Html.ActionLink("Details", "PageDetails", new { id=item.Id }) |
-            @Html.ActionLink("Delete", "DeletePagee", new { id=item.Id })
-        </td>
-    </tr>
-}
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Slug)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.HasSideBar)
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "EditPage", new { id = item.Id }) |
+                @Html.ActionLink("Details", "PageDetails", new { id = item.Id })
+                <!-- Если Slug равен home то кнопки на удаление не будет -->
+                @if (item.Slug != "home")
+                {
+                    string slash = " | ";
+                    @slash;
+                    @Html.ActionLink("Delete", "DeletePage", new { id = item.Id }, new { @class = "delete" })
+                }
+            </td>
+        </tr>
+    }
 
 </table>
+<!-- Подключение скрипта о подтверждении удаления страницы -->
+@section Scripts
+{
+    <script>
+        $(function () {
+            /* confirm page deletion */
+            $("a.delete").click(function () {
+                if (!confirm("Confirm page deletion")) return false;
+            });
+        });
+    </script>
+}

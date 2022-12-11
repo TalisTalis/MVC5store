@@ -263,5 +263,34 @@ namespace MVC_magic_store.Areas.Admin.Controllers
             // возвращение модели
             return View(model);
         }
+
+        // метод удаления страницы
+        // GET: Admin/Pages/DeletePage/Id
+        public ActionResult DeletePage(int id)
+        {
+            // план:
+            // получаем страницу
+            // удаем страницу
+            // сохранение изменений в БД
+            // переадресация на страницу index
+
+            // Поддключение к БД
+            using(DB db = new DB())
+            {
+                // Получение страницы
+                PagesDTO dto = db.Pages.Find(id);
+
+                // Удаление страницы
+                db.Pages.Remove(dto);
+
+                // Сохранение изменений
+                db.SaveChanges();
+            }
+            // Сообщение пользователю об успешном удалении
+            TempData["SM"] = "You have deleted a page.";
+
+            // Переадресация на главную страницу
+            return RedirectToAction("Index");
+        }
     }
 }
