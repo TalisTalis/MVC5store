@@ -30,6 +30,10 @@ namespace MVC_magic_store
                       "~/Content/bootstrap.css",
                       "~/Content/jquery-ui.css",
                       "~/Content/site.css"));
+
+            // Подключение новой библиотеки CKEditor
+            bundles.Add(new ScriptBundle("~/bundles/ckeditor").Include(
+                      "~/Scripts/ckeditor/ckeditor.js"));
         }
     }
 }

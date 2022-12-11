@@ -49,9 +49,11 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/Scripts/bootstrap.js")
     <!-- Подключение jqueryUI к шаблону Admin-->
     @Scripts.Render("~/bundles/jqueryui")
-    @Scripts.Render("~/Scripts/bootstrap.js")
+    <!-- Подключение ckeditor к шаблону Admin-->
+    @Scripts.Render("~/bundles/ckeditor")
     @RenderSection("scripts", required: false)
 </body>
 </html>
