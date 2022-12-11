@@ -19,13 +19,13 @@
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
+                        @Html.ActionLink("Pages", "Index", "Pages", "", new { @class = "nav-link" })
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Features</a>
+                        @Html.ActionLink("Sidebar", "EditSidebar", "Pages", "", new { @class = "nav-link" })
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#">Pricing</a>
+                        <!--<a class="nav-link" href="#">Pricing</a>-->
                     </li>
                 </ul>
                 <!-- New right menu -->
@@ -44,7 +44,7 @@
         @RenderBody()
         <hr />
         <footer>
-            <p>&copy; @DateTime.Now.Year - мое приложение ASP.NET</p>
+            <p>&copy; @DateTime.Now.Year - Magic Store</p>
         </footer>
     </div>
 
