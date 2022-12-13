@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 using System.Web.UI.WebControls;
 
 namespace MVC_magic_store.Models.ViewModels.Pages
@@ -29,6 +30,7 @@ namespace MVC_magic_store.Models.ViewModels.Pages
         public string Slug { get; set; }
         [Required]
         [StringLength(int.MaxValue,MinimumLength = 3)]
+        [AllowHtml] // Разрешение хтмл-тегов
         public string Body { get; set; }
         public int Sorting { get; set; }
         [Display(Name = "SideBar")]
