@@ -1,0 +1,82 @@
+﻿@model IEnumerable<MVC_magic_store.Models.ViewModels.Shop.CategoryVM>
+
+@{
+    ViewBag.Title = "Categories";
+}
+
+<h2>Categories</h2>
+
+<div class="newcat">
+    <div class="input-group mb-3">
+        <span class="input-group-text" id="inputGroup-sizing-default">Category Name</span>
+        <input type="text" id="newcatname" class="form-control" />
+    </div>
+    <p>
+        <a href="#" id="newcat" class="btn btn-success">Add a new category</a>
+        <span class="ajax-text">
+            <!-- картинка, которая покажет, что запрос обрабатывается -->
+            <img />
+        </span>
+    </p>
+</div>
+
+<!-- Вывод сообщения если в модели нет ни одной категории -->
+@if (!Model.Any())
+{
+    <h1 class="text-center">There are no categories.</h1>
+}
+else
+{
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.EditorFor(modelItem => item.Name, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly" } })
+                </td>
+                <td>
+                    @Html.ActionLink("Delete", "DeleteCategory", new { id = item.Id }, new { @class = "delete btn btn-danger" })
+                </td>
+            </tr>
+        }
+
+    </table>
+}
+<!-- Подключение скриптов на страницу -->
+@section Scripts
+{
+    <script>
+        $(function () {
+            /* confirm category deletion */
+            $("a.delete").click(function () {
+                if (!confirm("Confirm category deletion")) return false;
+            });
+            /* change cursor when drag and drop */
+            $("tr:not(.home)").mousedown(function () {
+                $(this).css("cursor", "move");
+            });
+            $("tr:not(.home)").mouseup(function () {
+                $(this).css("cursor", "default");
+            });
+            /* Sorting script */
+
+            $("table#categories tbody").sortable({
+                items: "tr:not(.home)",
+                placeholder: "ui-state-highlight",
+                update: function () {
+                    var ids = $("table#categories tbody").sortable("serialize");
+                    var url = "/Admin/Categories/ReorderPages";
+                    $.post(url, ids, function (data) {
+                    });
+                }
+            });
+        });
+    </script>
+}

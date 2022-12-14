@@ -14,5 +14,7 @@ namespace MVC_magic_store.Models.Data
         // связать модель sidebarDTO с БД
         public DbSet<SidebarDTO> Sidebars { get; set; } // сбор информации из sidebarDTO
 
+        // подключение таблицы Categories
+        public DbSet<CategoryDTO> Categories { get; set; }
     }
 }

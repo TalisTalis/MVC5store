@@ -28,3 +28,12 @@ textarea {
     background-color: #777;
     border-color: #fff
 }
+
+.newcat {
+    margin-top: 30px;
+    position: relative;
+}
+
+.ajax-text{
+    display: none;
+}
