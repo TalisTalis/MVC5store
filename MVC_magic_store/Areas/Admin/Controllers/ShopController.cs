@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Web.WebPages.Html;
 
 namespace MVC_magic_store.Areas.Admin.Controllers
@@ -180,7 +179,7 @@ namespace MVC_magic_store.Areas.Admin.Controllers
             using (DB db = new DB())
             {
                 // добавление  модель список категорий
-                model.Categories = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(db.Categories.ToList(), "id", "Name");
+                model.Categories = new System.Web.Mvc.SelectList(db.Categories.ToList(), "id", "Name");
             }
             return View(model);
         }

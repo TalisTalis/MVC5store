@@ -5,11 +5,8 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Web.WebPages.Html;
 using MVC_magic_store.Models.Data;
-//using SelectListItem = System.Web.WebPages.Html.SelectListItem;
 
 namespace MVC_magic_store.Models.ViewModels.Shop
 {
@@ -36,13 +33,14 @@ namespace MVC_magic_store.Models.ViewModels.Shop
         public string Description { get; set; } // обязательное поле
         public decimal Price { get; set; }
         [Required]
-        [DisplayName("Category")]  // как будет отображаться. Не CategoryName, а Category
         public string CategoryName { get; set; } // обязательное поле
+        [Required]
+        [DisplayName("Category")]  // как будет отображаться. Не CategoryId, а Category
         public int CategoryId { get; set; }
         public string ImageName { get; set; }
 
         // получение данных по внешнему ключу
-        public IEnumerable<Microsoft.AspNetCore.Mvc.Rendering.SelectListItem> Categories { get; set; } // перебор полученных данных
+        public IEnumerable<System.Web.Mvc.SelectListItem> Categories { get; set; } // перебор полученных данных
         public IEnumerable<String> GalleryImages { get; set; }
     }
 }
