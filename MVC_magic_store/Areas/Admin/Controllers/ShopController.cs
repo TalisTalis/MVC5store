@@ -1,4 +1,5 @@
 ﻿using MVC_magic_store.Models.Data;
+using MVC_magic_store.Models.ViewModels.Pages;
 using MVC_magic_store.Models.ViewModels.Shop;
 using System;
 using System.Collections.Generic;
@@ -134,6 +135,31 @@ namespace MVC_magic_store.Areas.Admin.Controllers
 
             // Переадресация на страницу Categories
             return id.ToString();
+        }
+
+        // метод переименовывания категории
+        // POST: Admin/Categories/RenameCategory
+        [HttpPost]
+        public string RenameCategory(string newCatName, int id)
+        {
+            // план:
+            // проверить имя категории на уникальность
+            // получить все данные из БД модель DTO
+            // редактирование модели DTO
+            // сохранение изменений
+            // возвращение результата string
+
+            using (DB db = new DB())
+            {
+                if (db.Categories.Any(x => x.Name == newCatName))
+                    return "titletaken";
+
+                CategoryDTO dto = db.Categories.Find(id);
+                dto.Name = newCatName;
+                dto.Slug = newCatName.Replace(" ", "-").ToLower();
+                db.SaveChanges();
+            }
+            return "succes";
         }
     }
 }
