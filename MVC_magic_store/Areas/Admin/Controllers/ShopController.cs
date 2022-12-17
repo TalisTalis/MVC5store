@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Web.WebPages.Html;
 
 namespace MVC_magic_store.Areas.Admin.Controllers
 {
@@ -138,7 +140,7 @@ namespace MVC_magic_store.Areas.Admin.Controllers
         }
 
         // метод переименовывания категории
-        // POST: Admin/Categories/RenameCategory
+        // POST: Admin/Categories/RenameCategory/Id
         [HttpPost]
         public string RenameCategory(string newCatName, int id)
         {
@@ -160,6 +162,27 @@ namespace MVC_magic_store.Areas.Admin.Controllers
                 db.SaveChanges();
             }
             return "succes";
+        }
+
+        // Метод добавления товаров
+        // GET: Admin/Shop/AddProduct
+        public ActionResult AddProduct()
+        {
+            // план:
+            // объявить модель данных
+            // добавить в модель список категорий из БД
+            // возвращаем модель в представление
+
+            // Обявление модели
+            ProductVM model = new ProductVM();
+
+            // Открываем соединение с БД
+            using (DB db = new DB())
+            {
+                // добавление  модель список категорий
+                model.Categories = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(db.Categories.ToList(), "id", "Name");
+            }
+            return View(model);
         }
     }
 }

@@ -16,5 +16,8 @@ namespace MVC_magic_store.Models.Data
 
         // подключение таблицы Categories
         public DbSet<CategoryDTO> Categories { get; set; }
+
+        // подключение таблицы Products
+        public  DbSet<ProductDTO> Products { get; set; }
     }
 }
