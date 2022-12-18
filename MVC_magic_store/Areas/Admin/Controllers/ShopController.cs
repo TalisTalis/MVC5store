@@ -1,6 +1,7 @@
 ﻿using MVC_magic_store.Models.Data;
 using MVC_magic_store.Models.ViewModels.Pages;
 using MVC_magic_store.Models.ViewModels.Shop;
+using PagedList;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -339,13 +340,59 @@ namespace MVC_magic_store.Areas.Admin.Controllers
 
                 // создание и сохранение уменьшенной копии
                 WebImage img = new WebImage(file.InputStream);
-                img.Resize(200, 200);
+                img.Resize(60, 60);
                 img.Save(path3);
             }
 
             // возвращаем пользователя
             return RedirectToAction("AddProduct");
 
+        }
+
+        // метод списка товаров
+        // GET: Admin/Shop/Products
+        [HttpGet]
+        public ActionResult Products (int? page, int? catId)
+        {
+            // план: 
+            // объявление списка ProductVM типа List
+            // установить номер страницы
+            // инициализировать список и БД
+            // заполнить категории данными
+            // установить выбранную категорию
+            // установить постраничную навигацию
+            // возвратить всё в представление
+
+            // объявление списка
+            List<ProductVM> listOfProductVM;
+
+            // установить номер страницы
+            var pageNumber = page ?? 1;
+
+            // подключение к БД
+            using(DB db = new DB())
+            {
+                // инициализация листа. заполнение модели данными
+                listOfProductVM = db.Products.ToArray()
+                                        .Where(x => catId == null || catId == 0 || x.CategoryId == catId) // в массив где категории нет или равна 0 или по id категории
+                                        .Select(x => new ProductVM(x))
+                                        .ToList();
+
+                // заполняем список категорий
+                ViewBag.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+
+                // устанавливаем выбранную категорию
+                ViewBag.SelectedCat = catId.ToString();
+            }
+
+            // устанавливаем постраничную навигацию
+            var onePageOfProducts = listOfProductVM.ToPagedList(pageNumber, 10);
+
+            // возвращаем в представление через viewbag
+            ViewBag.OnePageOfProducts = onePageOfProducts;
+
+            // возвращаем представление с данными
+            return View(listOfProductVM);
         }
     }
 }
