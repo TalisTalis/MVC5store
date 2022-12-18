@@ -14,6 +14,9 @@
 
             reader.readAsDataURL(input.files[0]);
         }
+        else {
+            $("img#imgpreview").hide();
+        }
     }
 
     $("#imageUpload").change(function () {
