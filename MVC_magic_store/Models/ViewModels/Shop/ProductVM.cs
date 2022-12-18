@@ -32,8 +32,7 @@ namespace MVC_magic_store.Models.ViewModels.Shop
         [Required]
         public string Description { get; set; } // обязательное поле
         public decimal Price { get; set; }
-        [Required]
-        public string CategoryName { get; set; } // обязательное поле
+        public string CategoryName { get; set; }
         [Required]
         [DisplayName("Category")]  // как будет отображаться. Не CategoryId, а Category
         public int CategoryId { get; set; }

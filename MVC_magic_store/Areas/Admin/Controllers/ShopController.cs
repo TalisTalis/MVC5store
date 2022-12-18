@@ -3,8 +3,11 @@ using MVC_magic_store.Models.ViewModels.Pages;
 using MVC_magic_store.Models.ViewModels.Shop;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.WebPages.Html;
 
@@ -165,6 +168,7 @@ namespace MVC_magic_store.Areas.Admin.Controllers
 
         // Метод добавления товаров
         // GET: Admin/Shop/AddProduct
+        [HttpGet]
         public ActionResult AddProduct()
         {
             // план:
@@ -179,9 +183,169 @@ namespace MVC_magic_store.Areas.Admin.Controllers
             using (DB db = new DB())
             {
                 // добавление  модель список категорий
-                model.Categories = new System.Web.Mvc.SelectList(db.Categories.ToList(), "id", "Name");
+                model.Categories = new System.Web.Mvc.SelectList(db.Categories.ToList(), "Id", "Name");
             }
             return View(model);
+        }
+
+        // Метод добавления товаров
+        //POST: Admin/Shop/AddProduct
+        [HttpPost]
+        public ActionResult AddProduct(ProductVM model, HttpPostedFileBase file)
+        {
+            // план:
+            // проверка модели на валидность
+            // проверка имени продукта на уникальность
+            // объявление переменной productId
+            // инициализация модели и сохранение ее в БД на основе ProductDTO
+            // оповещение пользователя об успешном сохранении через TempData
+            // Работа с картинкой:
+            // создать все необходимые директории по которым будут храниться картинки
+            // проверка существования директорий (если нет то создаем их)
+            // проверка был ли загружен файл
+            // проверка расширений файла
+            // объявляем переменную с именем файла
+            // сохраанение имени файла в модель DTO
+            // назначить пути для хранения оригинала и уменьшенной копии
+            // сохранение оригинала
+            // сохранение уменьшеной копии
+            // переадресация на страницу добавления товаров AddProduct
+
+            // Проверка модели на валидность
+            if (!ModelState.IsValid)
+            {
+                // открываем подключение к БД
+                using(DB db = new DB())
+                {
+                    model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name"); // если не составим заново список то выпадающий список будет пуст
+                    return View(model);
+                }
+            }
+
+            // открываем подключение к БД
+            using(DB db = new DB())
+            {
+                // проверка на уникальность имени продукта
+                if (db.Products.Any(x => x.Name == model.Name))
+                {
+                    model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name"); // если не составим заново список то выпадающий список будет пуст
+                    // добавляем ошибку
+                    ModelState.AddModelError("", "That product name is taken.");
+                    return View(model);
+                }
+            }
+
+            // объявляем переменную ProductID
+            int id;
+
+            // подключение к БД
+            using(DB db = new DB())
+            {
+                // инициализация модели DTO
+                ProductDTO product = new ProductDTO();
+
+                product.Name = model.Name;
+                product.Slug = model.Name.Replace(" ","-").ToLower();
+                product.Description = model.Description;
+                product.Price = model.Price;
+                product.CategoryId = model.CategoryId;
+                
+                // необходима модель категории CategoryDTO. объявление и нициализация модели
+                CategoryDTO catDTO = db.Categories.FirstOrDefault(x => x.Id == model.CategoryId);
+                product.CategoryName = catDTO.Name;
+
+                // сохранение модели
+                db.Products.Add(product);
+                db.SaveChanges();
+
+                // получение id только что добавленной записи
+                id = product.Id;
+            }
+
+            // добавление сообщения в TempData
+            TempData["SM"] = "You have added a product.";
+
+            // Upload Image
+            // Создание необходимых ссылок директорий
+            var originalDirectory = new DirectoryInfo(string.Format($"{Server.MapPath(@"\")}Images\\Uploads")); // в корне появится папка Images а в ней папка Uploads
+
+            var pathString1 = Path.Combine(originalDirectory.ToString(), "Products");
+            var pathString2 = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString());
+            var pathString3 = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString() + "\\Thumbs"); // уменьшенная копия
+            var pathString4 = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString() + "\\Gallery");
+            var pathString5 = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString() + "\\Gallery\\Thumbs");
+
+            // Проверка наличия директорий
+            if (!Directory.Exists(pathString1))
+                Directory.CreateDirectory(pathString1);
+
+            if (!Directory.Exists(pathString2))
+                Directory.CreateDirectory(pathString2);
+
+            if (!Directory.Exists(pathString3))
+                Directory.CreateDirectory(pathString3);
+
+            if (!Directory.Exists(pathString4))
+                Directory.CreateDirectory(pathString4);
+
+            if (!Directory.Exists(pathString5))
+                Directory.CreateDirectory(pathString5);
+
+            // Проверка был ли загружен файл
+            if (file != null && file.ContentLength > 0)
+            {
+                // получение расширения файла
+                string ext = file.ContentType.ToLower();
+
+                // проверка расширения файла
+                if (ext != "image/jpg" &&
+                    ext != "image/jpeg" &&
+                    ext != "image/pjpeg" &&
+                    ext != "image/gif" &&
+                    ext != "image/x-png" &&
+                    ext != "image/png")
+                {
+                    // подключение к БД
+                    using(DB db = new DB())
+                    {
+                        model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name"); // если не составим заново список то выпадающий список будет пуст
+                                                                                                
+                        ModelState.AddModelError("", "The image was not uploaded - wrong image extention"); // добавляем ошибку
+                        return View(model);
+                    }
+                }
+                // Объявляем переменную с именем изображения
+                string imageName = file.FileName;
+
+                // открываем соединение с БД
+                using (DB db = new DB())
+                {
+                    // инициализация модели
+                    ProductDTO dto = db.Products.Find(id);
+
+                    // присваивание модели имени полученого файла
+                    dto.ImageName = imageName;
+
+                    // сохранение в БД
+                    db.SaveChanges();
+                }
+
+                // назначение пути для оригинала и для уменьшенной копии
+                var path2 = string.Format($"{pathString2}\\{imageName}"); // оригинал
+                var path3 = string.Format($"{pathString3}\\{imageName}"); // уменьшенная копия
+
+                // сохранение оригинала
+                file.SaveAs(path2);
+
+                // создание и сохранение уменьшенной копии
+                WebImage img = new WebImage(file.InputStream);
+                img.Resize(200, 200);
+                img.Save(path3);
+            }
+
+            // возвращаем пользователя
+            return RedirectToAction("AddProduct");
+
         }
     }
 }
