@@ -394,5 +394,129 @@ namespace MVC_magic_store.Areas.Admin.Controllers
             // возвращаем представление с данными
             return View(listOfProductVM);
         }
+
+        // метод редактирования товаров
+        // GET: Admin/Shop/EditProduct/id
+        [HttpGet]
+        public ActionResult EditProduct(int id)
+        {
+            // план:
+            // объявить модель productVM
+            // получить все поля товара
+            // проверить доступность существование товара
+            // инициализируем модель данными БД
+            // создаем список категорий
+            // получить все изображения из галлереи
+            // вернуть модель в представление
+
+            // Объявляем модель ProductVM
+            ProductVM model;
+
+            // подключение к БД
+            using(DB db = new DB())
+            {
+                // получаем товар
+                ProductDTO dto = db.Products.Find(id);
+
+                // проверка доступности товара
+                if (dto == null)
+                {
+                    return Content("That product does not exist.");
+                }
+
+                // инициализация модели данными
+                model = new ProductVM(dto);
+
+                // создаем список категорий
+                model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+
+                // получаем все изображения из галлереи
+                model.GalleryImages = Directory
+                                .EnumerateFiles(Server.MapPath("~/Images/Uploads/Products/" + id + "/Gallery/Thumbs"))
+                                .Select(fn => Path.GetFileName(fn));
+            }
+
+            // Возвращаем представление с моделью
+            return View(model);
+        }
+
+        // метод редактирования товара
+        // POST: Admin/Shop/EditProduct
+        [HttpPost]
+        public ActionResult EditProduct(ProductVM model, HttpPostedFileBase file)
+        {
+            // план:
+            // получение id товара
+            // заполнить список категориями и изображениями
+            // проверка модели на валидность
+            // проверка имени на уникальность
+            // обновить данные в БД
+            // устновить сообщение в tempdata
+            // загрузка обработка изображений:
+                //
+            // переадресация пользователя
+
+            // получение id
+            int id = model.Id;
+
+            // подключение к БД
+            using(DB db = new DB())
+            {
+                // заполнение модели списком категориями
+                model.Categories = new SelectList(db.Categories.ToList(), "Id", "Name");
+            }
+
+            // получаем все изображения из галлереи
+            model.GalleryImages = Directory
+                            .EnumerateFiles(Server.MapPath("~/Images/Uploads/Products/" + id + "/Gallery/Thumbs"))
+                            .Select(fn => Path.GetFileName(fn));
+
+            // проверка модели на валидность
+            if (!ModelState.IsValid)
+            {
+                return View(model);
+            }
+
+            // подключение к БД
+            using(DB db = new DB())
+            {
+                // проверка названия товара на уникальность
+                if (db.Products.Where(x => x.Id != id).Any(x => x.Name == model.Name)) // в БД все товары кроме текущего и в это имя не должно быть таким же
+                {
+                    ModelState.AddModelError("", "That product name is taken.");
+                    return View(model);
+                }
+            }
+
+            // подключение к БД
+            using(DB db = new DB())
+            {
+                // находим в БД текущий товар
+                ProductDTO dto = db.Products.Find(id);
+
+                // обновляем данные из БД данными из полученной модели
+                dto.Name = model.Name;
+                dto.Slug = model.Name.Replace(" ", "-").ToLower();
+                dto.Description = model.Description;
+                dto.Price = model.Price;
+                dto.CategoryId = model.CategoryId;
+                dto.ImageName = model.ImageName;
+
+                // обновление категории
+                CategoryDTO catDTO = db.Categories.FirstOrDefault(x => x.Id == model.CategoryId);
+                dto.CategoryName = catDTO.Name;
+
+                // сохранение в БД
+                db.SaveChanges();
+            }
+
+            // оповещение пользователя
+            TempData["SM"] = "You have edited the product.";
+
+            // Обработка изображений
+
+            // Переадресация пользователя
+            return RedirectToAction("EditProduct");
+        }
     }
 }

@@ -36,6 +36,7 @@ namespace MVC_magic_store.Models.ViewModels.Shop
         [Required]
         [DisplayName("Category")]  // как будет отображаться. Не CategoryId, а Category
         public int CategoryId { get; set; }
+        [DisplayName("Image")]
         public string ImageName { get; set; }
 
         // получение данных по внешнему ключу
