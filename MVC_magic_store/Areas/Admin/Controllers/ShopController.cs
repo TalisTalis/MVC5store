@@ -1,4 +1,5 @@
-﻿using MVC_magic_store.Models.Data;
+﻿using Microsoft.AspNetCore.Http;
+using MVC_magic_store.Models.Data;
 using MVC_magic_store.Models.ViewModels.Pages;
 using MVC_magic_store.Models.ViewModels.Shop;
 using PagedList;
@@ -513,10 +514,127 @@ namespace MVC_magic_store.Areas.Admin.Controllers
             // оповещение пользователя
             TempData["SM"] = "You have edited the product.";
 
-            // Обработка изображений
+            // Обработка изображений:
+            // план:
+            // проверяем загрузку файла
+            // получаем расширение файла
+            // проверить расширение файла
+            // установить пути для загрузки
+            // удаляем существующие файлы в директориях и директории
+            // сохраняем изображение
+            // сохраняем оригинал и превью версии
+
+            // Проверка на загрузку файла
+            if (file != null && file.ContentLength > 0)
+            {
+                // Получение расширения файла
+                string ext = file.ContentType.ToLower(); // получение расширения и перевод в нижний регистр
+
+                // проверка расширения файла
+                if (ext != "image/jpg" &&
+                    ext != "image/jpeg" &&
+                    ext != "image/pjpeg" &&
+                    ext != "image/gif" &&
+                    ext != "image/x-png" &&
+                    ext != "image/png")
+                {
+                    // подключение к БД
+                    using (DB db = new DB())
+                    {
+                        ModelState.AddModelError("", "The image was not uploaded - wrong image extention"); // добавляем ошибку
+                        return View(model);
+                    }
+                }
+
+                // устанавливаем пути загрузки
+                var originalDirectory = new DirectoryInfo(string.Format($"{Server.MapPath(@"\")}Images\\Uploads")); // в корне появится папка Images а в ней папка Uploads
+
+                var pathString1 = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString());
+                var pathString2 = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString() + "\\Thumbs"); // уменьшенная копия
+
+                // удаление существующих файлов и папок
+                DirectoryInfo di1 = new DirectoryInfo(pathString1);
+                DirectoryInfo di2 = new DirectoryInfo(pathString2);
+
+                // два цикла обхода изображений и папок. один удаляет изображения, другой уменьшенные копии
+                foreach (var origFile in di1.GetFiles())
+                {
+                    origFile.Delete();
+                }
+                foreach (var miniFile in di2.GetFiles())
+                {
+                    miniFile.Delete();
+                }
+
+                // Сохранить имя изображения
+                string imageName = file.FileName;
+
+                // открытие подключения к БД
+                using (DB db = new DB())
+                {
+                    // нахождение текущего товара в БД
+                    ProductDTO dto = db.Products.Find(id);
+
+                    // присваеваение нового названия
+                    dto.ImageName = imageName;
+
+                    // сохранение в БД
+                    db.SaveChanges();
+                }
+
+                // назначение пути для оригинала и для уменьшенной копии
+                var path1 = string.Format($"{pathString1}\\{imageName}"); // оригинал
+                var path2 = string.Format($"{pathString2}\\{imageName}"); // уменьшенная копия
+
+                // сохранение оригинала
+                file.SaveAs(path1);
+
+                // создание и сохранение уменьшенной копии
+                WebImage img = new WebImage(file.InputStream);
+                img.Resize(60, 60);
+                img.Save(path2);
+            }
 
             // Переадресация пользователя
             return RedirectToAction("EditProduct");
+        }
+
+        // метод удаления товара
+        // POST: Admin/Shop/DeleteProduct/id
+        public ActionResult DeleteProduct(int id)
+        {
+            // план:
+            // удаляем товар из БД
+            // удалить директории товара
+            // переадресация пользователя
+
+            // подключение к БД
+            using (DB db = new DB())
+            {
+                // получение данной модели
+                ProductDTO dto = db.Products.Find(id);
+
+                // удаление данной модели
+                db.Products.Remove(dto);
+
+                // сохранение изменений
+                db.SaveChanges();
+            }
+
+            // удаление директорий
+            // пути к изображениям
+            var originalDirectory = new DirectoryInfo(string.Format($"{Server.MapPath(@"\")}Images\\Uploads"));
+
+            var pathString = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString());
+
+            // проверка на доступность директорий
+            if (Directory.Exists(pathString))
+            {
+                Directory.Delete(pathString, true);
+            }
+
+            // переадресация
+            return RedirectToAction("Products");
         }
     }
 }
