@@ -1,5 +1,5 @@
 ﻿$(function () {
-    /* Preeview selected image */
+    /* Preview selected image */
     function readURL(input) {
         if (input.files && input.files[0]) {
             var reader = new FileReader();
@@ -21,5 +21,5 @@
 
     $("#imageUpload").change(function () {
         readURL(this);
-    });
+    });    
 });

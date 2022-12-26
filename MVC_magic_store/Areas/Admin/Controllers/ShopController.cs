@@ -460,6 +460,8 @@ namespace MVC_magic_store.Areas.Admin.Controllers
             // получение id
             int id = model.Id;
 
+            string nameImageDTO;
+
             // подключение к БД
             using(DB db = new DB())
             {
@@ -536,7 +538,8 @@ namespace MVC_magic_store.Areas.Admin.Controllers
                     ext != "image/pjpeg" &&
                     ext != "image/gif" &&
                     ext != "image/x-png" &&
-                    ext != "image/png")
+                    ext != "image/png" &&
+                    ext != "image/PNG")
                 {
                     // подключение к БД
                     using (DB db = new DB())
@@ -594,6 +597,36 @@ namespace MVC_magic_store.Areas.Admin.Controllers
                 img.Resize(60, 60);
                 img.Save(path2);
             }
+            else if (file == null)
+            {
+                // устанавливаем пути загрузки
+                var originalDirectory = new DirectoryInfo(string.Format($"{Server.MapPath(@"\")}Images\\Uploads")); // в корне появится папка Images а в ней папка Uploads
+
+                var pathString1 = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString());
+                var pathString2 = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString() + "\\Thumbs"); // уменьшенная копия
+
+                string newFileName = model.ImageName;
+
+                var oldOrigFileName = new DirectoryInfo(pathString1).GetFiles();
+                var oldMiniFileName = new DirectoryInfo(pathString2).GetFiles();
+
+                string oldOrigFileNameString = oldOrigFileName[0].Name;
+                string oldMiniFileNameString = oldMiniFileName[0].Name;
+
+                // назначение пути для оригинала и для уменьшенной копии
+                var newpath1 = string.Format($"{pathString1}\\{newFileName}"); // оригинал
+                var newpath2 = string.Format($"{pathString2}\\{newFileName}"); // уменьшенная копия
+
+                // назначение пути для оригинала и для уменьшенной копии
+                var oldpath1 = string.Format($"{pathString1}\\{oldOrigFileNameString}"); // оригинал
+                var oldpath2 = string.Format($"{pathString2}\\{oldMiniFileNameString}"); // уменьшенная копия
+
+                System.IO.File.Copy(oldpath1, newpath1, true);
+                System.IO.File.Delete(oldpath1);
+
+                System.IO.File.Copy(oldpath2, newpath2, true);
+                System.IO.File.Delete(oldpath2);
+            }
 
             // Переадресация пользователя
             return RedirectToAction("EditProduct");
@@ -635,6 +668,81 @@ namespace MVC_magic_store.Areas.Admin.Controllers
 
             // переадресация
             return RedirectToAction("Products");
+        }
+
+        // метод добавления изображений в галлерею
+        // POST: Admin/Shop/SaveGalleryImages/id
+        [HttpPost]
+        public void SaveGalleryImages(int id)
+        {
+            // план:
+            // перебрать все полученные файлы
+            // инициализировать файлы
+            // проверка на null
+            // назначаем пути к директориям
+            // назначить пути самих изображений
+            // сохранить оригинальные изображения и уменьшенные копии
+
+            // Перебор полученных файлов (имен файлов)
+            foreach (string fileName in Request.Files)
+            {
+                // инициализация файлов
+                HttpPostedFileBase file = Request.Files[fileName];
+
+                // проверка на null есть ли файлы
+                if (file != null && file.ContentLength > 0)
+                {
+                    // назначить пути к директориям
+                    var originalDirectory = new DirectoryInfo(string.Format($"{Server.MapPath(@"\")}Images\\Uploads"));
+
+                    // путь к Gallery оригиналам
+                    string pathStringOrigGallery = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString() + "\\Gallery");
+
+                    // путь к Gallery уменьшенным копиям
+                    string pathStringMiniGallery = Path.Combine(originalDirectory.ToString(), "Products\\" + id.ToString() + "\\Gallery\\Thumbs");
+
+                    // пути к изображениям
+                    // к оригиналам
+                    var pathOrigGallery = string.Format($"{pathStringOrigGallery}\\{file.FileName}");
+
+                    // к копиям
+                    var pathMiniGallery = string.Format($"{pathStringMiniGallery}\\{file.FileName}");
+
+                    // сохранения оригиналов и копий
+                    // оригиналы
+                    file.SaveAs(pathOrigGallery);
+
+                    // копии
+                    // взять из стрима файл
+                    WebImage img = new WebImage(file.InputStream);
+                    // уменьшение размера
+                    img.Resize(60, 60);
+                    img.Save(pathMiniGallery);
+                }
+            }
+        }
+
+        // метод удаления изображений галлереи
+        // POST: Admin/Shop/DeleteImage/id/imageName
+        public void DeleteImage(int id, string imageName)
+        {
+            // пути 
+            // оригинал
+            string fullPathOrig = Request.MapPath("~/Images/Uploads/Products/" + id.ToString() + "/Gallery/" + imageName);
+
+            // копии
+            string fullPathMini = Request.MapPath("~/Images/Uploads/Products/" + id.ToString() + "/Gallery/Thumbs/" + imageName);
+
+            // существуют ли там картинки
+            if (System.IO.File.Exists(fullPathOrig)) // существуют ли файлы по данному пути
+            {
+                System.IO.File.Delete(fullPathOrig);
+            }
+            if (System.IO.File.Exists(fullPathMini)) // существуют ли файлы по данному пути
+            {
+                System.IO.File.Delete(fullPathMini);
+            }
+
         }
     }
 }
