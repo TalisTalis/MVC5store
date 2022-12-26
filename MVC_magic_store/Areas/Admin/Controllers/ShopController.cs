@@ -460,7 +460,7 @@ namespace MVC_magic_store.Areas.Admin.Controllers
             // получение id
             int id = model.Id;
 
-            string nameImageDTO;
+            //string nameImageDTO;
 
             // подключение к БД
             using(DB db = new DB())
