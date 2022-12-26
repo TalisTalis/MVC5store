@@ -341,7 +341,7 @@ namespace MVC_magic_store.Areas.Admin.Controllers
 
                 // создание и сохранение уменьшенной копии
                 WebImage img = new WebImage(file.InputStream);
-                img.Resize(60, 60);
+                img.Resize(60, 60).Crop(1,1);
                 img.Save(path3);
             }
 
@@ -594,7 +594,7 @@ namespace MVC_magic_store.Areas.Admin.Controllers
 
                 // создание и сохранение уменьшенной копии
                 WebImage img = new WebImage(file.InputStream);
-                img.Resize(60, 60);
+                img.Resize(60, 60).Crop(1, 1);
                 img.Save(path2);
             }
             else if (file == null)
@@ -716,7 +716,7 @@ namespace MVC_magic_store.Areas.Admin.Controllers
                     // взять из стрима файл
                     WebImage img = new WebImage(file.InputStream);
                     // уменьшение размера
-                    img.Resize(60, 60);
+                    img.Resize(60, 60).Crop(1, 1);
                     img.Save(pathMiniGallery);
                 }
             }

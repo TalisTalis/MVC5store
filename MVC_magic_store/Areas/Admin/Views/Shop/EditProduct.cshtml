@@ -95,13 +95,21 @@
 <br />
 <br />
 
-@foreach (var image in Model.GalleryImages)
-{
-    <div style="display:inline-block">
-        <img src="/Images/Uploads/Products/@Model.Id/Gallery/Thumbs/@image" />
-        @Html.ActionLink("Delete", "DeleteImage", "Shop", new { @class = "deleteimage", data_name = image })
-    </div>
-}
+<div class="row" style="margin-bottom:25px">
+    @foreach (var image in Model.GalleryImages)
+    {
+        <div class="col">
+            <div class="galleryStyle">
+                <div style="padding: 10px; width: 80px; height: 80px; display: inline-block">
+                    <img src="/Images/Uploads/Products/@Model.Id/Gallery/Thumbs/@image" />
+                </div>
+                <div style="text-align:center">
+                    @Html.ActionLink("Delete", "DeleteImage", "Shop", new { @class = "deleteimage btn btn-danger", data_name = image, style="margin: 10px" })
+                </div>                
+            </div>
+        </div>
+    }
+</div>
 
 <div>
     @Html.ActionLink("Back to Products", "Products")
@@ -114,9 +122,6 @@
 {
     <script src="~/Content/ShopJS/AddProductJS.js"></script>
     <script src="~/Scripts/dropzone/dropzone.js"></script>
-
-
-
 
     <script>
     /* Dropzone js Add images */
@@ -149,7 +154,7 @@
         var imageName = $this.data("name");
 
         $.post(url, { id: @Model.Id, imageName: imageName }, function (data) {
-            $this.parent().fadeOut("allow");
+            $this.parent().parent().parent().fadeOut("allow");
         });
     });
     </script>
