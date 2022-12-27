@@ -96,5 +96,30 @@ namespace MVC_magic_store.Controllers
             // возвращение частичного представления
             return PartialView("_PagesMenuPartial", pageVMList);
         }
+
+        public ActionResult SidebarPartial()
+        {
+            // план:
+            // объявить модель
+            // инициализация модели данными
+            // возвращение модели в частичное представление
+
+            // объявление модели sidebar
+            SidebarVM model;
+
+            // инициализация модели данными
+            // подключение к БД
+            using (DB db = new DB())
+            {
+                // загрузка в dto данные из БД
+                SidebarDTO dto = db.Sidebars.Find(1);
+
+                // сохранение данных в модель
+                model = new SidebarVM(dto);
+            }
+
+            // возвращение модели в частичное представление
+            return PartialView("_SidebarPartial", model);
+        }
     }
 }
