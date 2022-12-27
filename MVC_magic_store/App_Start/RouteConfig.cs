@@ -22,6 +22,8 @@ namespace MVC_magic_store
             routes.MapRoute("PagesMenuPartial", "Pages/PagesMenuPartial", new { controller = "Pages", action = "PagesMenuPartial" }, new[] { "MVC_magic_store.Controllers" });
 
             routes.MapRoute("SidebarPartial", "Pages/SidebarPartial", new { controller = "Pages", action = "SidebarPartial" }, new[] { "MVC_magic_store.Controllers" });
+            
+            routes.MapRoute("Shop", "Shop/{action}/{name}", new { controller = "Shop", action = "Index", name = UrlParameter.Optional }, new[] { "MVC_magic_store.Controllers" });
 
             routes.MapRoute("Pages", "{page}", new { controller = "Pages", action = "Index" }, new[] { "MVC_magic_store.Controllers" });            
             
