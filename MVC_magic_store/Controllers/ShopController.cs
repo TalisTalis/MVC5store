@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.IO;
 
 namespace MVC_magic_store.Controllers
 {
@@ -97,7 +98,53 @@ namespace MVC_magic_store.Controllers
         [ActionName("product-details")]
         public ActionResult ProductDetails(string name)
         {
+            // план:
+            // объявление двух моделей DTO и VM
+            // инициалиация id продуктом
+            // проверяем доступен ли продукт
+            // инициализация модели dto данными
+            // получение id
+            // инициализируем модель VM данными
+            // получение изображений галлереи
+            // возвращаем модель в представление
 
+            // объявление модели DTO
+            ProductDTO dto;
+
+            // объявление модели VM
+            ProductVM model;
+
+            // объявляем и инициализируем id
+            int id = 0;
+
+            // подключение к БД
+            using (DB db = new DB())
+            {
+                // проверка доступности товара
+                // если ничего не найдено
+                if (!db.Products.Any(x => x.Slug.Equals(name)))
+                {
+                    // переадресация на метод Index
+                    return RedirectToAction("Index", "Shop");
+                }
+
+                // инициализация модели DTO данными
+                dto = db.Products.Where(x => x.Slug == name).FirstOrDefault();
+
+                // получаение id
+                id = dto.Id;
+
+                // инициализация модели VM данными
+                model = new ProductVM(dto);
+            }
+
+            // Получение всех изображений из галлереи
+            model.GalleryImages = Directory
+                                    .EnumerateFiles(Server.MapPath("~/Images/Uploads/Products" + id + "/Gallery/Thumbs"))
+                                    .Select(fn => Path.GetFileName(fn));
+
+            // возврат представления и метода
+            return View("ProductDetails", model);
         }
     }
 }
