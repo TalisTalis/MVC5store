@@ -140,7 +140,7 @@ namespace MVC_magic_store.Controllers
 
             // Получение всех изображений из галлереи
             model.GalleryImages = Directory
-                                    .EnumerateFiles(Server.MapPath("~/Images/Uploads/Products" + id + "/Gallery/Thumbs"))
+                                    .EnumerateFiles(Server.MapPath("~/Images/Uploads/Products/" + id + "/Gallery/Thumbs"))
                                     .Select(fn => Path.GetFileName(fn));
 
             // возврат представления и метода
