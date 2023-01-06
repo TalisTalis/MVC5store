@@ -12,7 +12,7 @@
 }
 else
 {
-    <table class="table">
+    <table class="table" style="text-align:center">
         <tr>
             <th>
                 Image
@@ -37,21 +37,21 @@ else
                 <td>
                     <img src="/Images/Uploads/Products/@item.ProductId/Thumbs/@item.Image" />
                 </td>
-                <td>
+                <td style="text-align:left">
                     @Html.DisplayFor(modelItem => item.ProductName)
                 </td>
-                <td>
+                <td class="qty@(item.ProductId)">
                     @Html.DisplayFor(modelItem => item.Quantity)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
-                <td>
+                <td style="text-align:left">
                     <a href="#" class="btn incproduct" data-id="@item.ProductId">+</a>
                     <a href="#" class="btn decproduct" data-id="@item.ProductId">-</a>
                     <a href="#" class="btn removeproduct" data-id="@item.ProductId">Remove</a>
                 </td>
-                <td>
+                <td class="total@(item.ProductId)">
                     @Html.DisplayFor(modelItem => item.Total)
                 </td>
             </tr>
@@ -63,7 +63,12 @@ else
             <td></td>
             <td></td>
             <td></td>
-            <td class="grandtotal"><b>Grand total:</b><span>@ViewBag.GrandTotal</span></td>
+            <td class="grandtotal"><b>Grand total: </b><span>@ViewBag.GrandTotal</span></td>
         </tr>
     </table>
+}
+
+@section Scripts
+{
+    <script src="~/Content/ShopJS/IncrementProductJS.js"></script>
 }

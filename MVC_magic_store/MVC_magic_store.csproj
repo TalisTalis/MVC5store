@@ -545,6 +545,7 @@
     <Content Include="Content\PagedList.css" />
     <Content Include="Content\ShopJS\AddProductJS.js" />
     <Content Include="Content\ShopJS\CategoriesViewJS.js" />
+    <Content Include="Content\ShopJS\IncrementProductJS.js" />
     <Content Include="Content\ShopJS\PagesIndexViewJS.js" />
     <Content Include="Content\ShopJS\ProductDetailsJS.js" />
     <Content Include="Content\ShopJS\ProductsJS.js" />

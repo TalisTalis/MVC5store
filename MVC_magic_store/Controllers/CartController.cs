@@ -167,5 +167,37 @@ namespace MVC_magic_store.Controllers
                 return PartialView("_AddToCartPartial", model);
             }
         }
+
+        // метод увеличения количества товара в корзине
+        // GET: Cart/IcrementProduct
+        public JsonResult IncrementProduct(int productId)
+        {
+            // план:
+            // объявить лист cartVM
+            // получение модели из листа
+            // добавить количество товара
+            // сохранить данные
+            // вернуть json ответ с данными
+
+            // объявление листа cartVM
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            // подключение к БД
+            using (DB db = new DB())
+            {
+                // получение модели из листа
+                CartVM model = cart.FirstOrDefault(x => x.ProductId == productId);
+
+                // добавляем количество
+                model.Quantity++;
+
+                // Сохраняем данные
+                // призваиваем значения
+                var result = new { qty = model.Quantity, price = model.Price };
+
+                // возвращаем данные json ом поэтому доп параметром нужно разрешить передачу
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
     }
 }
