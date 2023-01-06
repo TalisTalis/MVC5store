@@ -863,6 +863,25 @@
     <Content Include="Content\bootstrap-grid.rtl.css.map" />
     <Content Include="Content\bootstrap-grid.min.css.map" />
     <Content Include="Content\bootstrap-grid.css.map" />
+    <Content Include="Scripts\bundles\bootstrap.bundle.js" />
+    <Content Include="Scripts\bundles\bootstrap.bundle.min.js" />
+    <Content Include="Scripts\bundles\bootstrap.esm.js" />
+    <Content Include="Scripts\bundles\bootstrap.esm.min.js" />
+    <Content Include="Scripts\bundles\bootstrap.js" />
+    <Content Include="Scripts\bundles\bootstrap.min.js" />
+    <Content Include="Scripts\bundles\jquery-3.6.1.js" />
+    <Content Include="Scripts\bundles\jquery-3.6.1.min.js" />
+    <Content Include="Scripts\bundles\jquery-ui.js" />
+    <Content Include="Scripts\bundles\jquery.fancybox-buttons.js" />
+    <Content Include="Scripts\bundles\jquery.fancybox-media.js" />
+    <Content Include="Scripts\bundles\jquery.fancybox-thumbs.js" />
+    <Content Include="Scripts\bundles\jquery.fancybox.js" />
+    <Content Include="Scripts\bundles\jquery.fancybox.pack.js" />
+    <Content Include="Scripts\bundles\jquery.mousewheel-3.0.6.pack.js" />
+    <None Include="Scripts\bundles\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\bundles\jquery.validate.js" />
+    <Content Include="Scripts\bundles\jquery.validate.min.js" />
+    <Content Include="Scripts\bundles\modernizr-2.8.3.js" />
     <Content Include="Scripts\ckeditor\adapters\jquery.js" />
     <Content Include="Scripts\ckeditor\CHANGES.html" />
     <Content Include="Scripts\ckeditor\ckeditor.asp" />
@@ -1246,6 +1265,12 @@
     <Content Include="Areas\Admin\Views\Shop\AddProduct.cshtml" />
     <Content Include="Areas\Admin\Views\Shop\Products.cshtml" />
     <Content Include="Areas\Admin\Views\Shop\EditProduct.cshtml" />
+    <Content Include="Scripts\bundles\bootstrap.bundle.js.map" />
+    <Content Include="Scripts\bundles\bootstrap.bundle.min.js.map" />
+    <Content Include="Scripts\bundles\bootstrap.esm.js.map" />
+    <Content Include="Scripts\bundles\bootstrap.esm.min.js.map" />
+    <Content Include="Scripts\bundles\bootstrap.js.map" />
+    <Content Include="Scripts\bundles\bootstrap.min.js.map" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery-ui.js" />
     <Content Include="Scripts\jquery.fancybox-buttons.js" />
@@ -1276,6 +1301,7 @@
     <Content Include="Views\Shop\ProductDetails.cshtml" />
     <Content Include="Views\Cart\_CartPartial.cshtml" />
     <Content Include="Views\Cart\Index.cshtml" />
+    <Content Include="Views\Cart\_AddToCartPartial.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Areas\Admin\Data\" />

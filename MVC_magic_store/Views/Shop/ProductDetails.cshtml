@@ -55,13 +55,14 @@
     <script src="~/Scripts/jquery.fancybox.js"></script>
     <script src="~/Content/ShopJS/ProductDetailsJS.js"></script>
     <script>
+        /* скрипт добавляет по клику товар в корзину */
         $(function () {
             $("a.addtocart").click(function (e) {
                 e.preventDefault();
 
                 $("span.loader").addClass("ib");
 
-                var url = "cart/AddToCartPartial";
+                var url = "/Cart/AddToCartPartial";
 
                 $.get(url, { id: @Model.Id}, function (data) {
                     $(".ajaxcart").html(data);

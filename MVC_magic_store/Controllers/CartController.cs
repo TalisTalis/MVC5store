@@ -1,4 +1,5 @@
 ﻿using MVC_magic_store.Models.ViewModels.Cart;
+using MVC_magic_store.Models.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -75,6 +76,10 @@ namespace MVC_magic_store.Controllers
                     qty += item.Quantity;
                     price += item.Quantity * item.Price;
                 }
+
+                // сохранение в модель
+                model.Quantity = qty;
+                model.Price = price;
             }
             else
             {
@@ -85,6 +90,82 @@ namespace MVC_magic_store.Controllers
 
             // возвращаем частичное представление
             return PartialView("_CartPartial", model);
+        }
+
+        public ActionResult AddToCartPartial(int id)
+        {
+            // план:
+            // объявить список типа cartvm
+            // объявить модель cartvm
+            // получить товар по id
+            // проверка находится ли такой товар в корзине или нет
+            // если нет в корзине то добавить в корзину
+            // если есть то добавить еще
+            // поличить общее количество товаров
+            // получить общее цен
+            // добавить данные в модель
+            // сохраняем состояние корзины в сессию
+            // возвращаем частичное представление с моделью
+
+            // объявение лист параметризированный типом CartVM
+            List<CartVM> cart = Session["cart"] as List<CartVM> ?? new List<CartVM>();
+
+            // обявление модели CartVM
+            CartVM model = new CartVM();
+
+            // открываем подключение к БД
+            using (DB db = new DB())
+            {
+                // получение товара
+                ProductDTO product = db.Products.Find(id); // поиск БД по id
+
+                // проверка находится ли товар уже в корзине
+                // объявление и инициализация переменной данными из БД записью товара с переданным id
+                var productInCart = cart.FirstOrDefault(x => x.ProductId == id);
+
+                // если товара нет то добавляем новый товар в корзину
+                if (productInCart == null)
+                {
+                    // добавляем товар и присваиваем значения
+                    cart.Add(new CartVM()
+                    {
+                        ProductId = product.Id,
+                        ProductName = product.Name,
+                        Quantity = 1,
+                        Price = product.Price,
+                        Image = product.ImageName
+                    });
+                }
+                else
+                {
+                    // если товар уже есть в корзине
+                    productInCart.Quantity++;
+                }
+
+                // получение общее количество товара, итоговую цену
+                // переменная общего количества товара
+                int qty = 0;
+                // переменная общей цены
+                decimal price = 0m;
+
+                // проводим по карзине и прибавляем в общее количество и в общую цену цены товаров в корзине
+                foreach (var item in cart)
+                {
+                    qty += item.Quantity;
+                    price += item.Quantity * item.Price;
+                }
+
+                // добавляем полученные данные в модель
+                model.Quantity = qty;
+
+                model.Price = price;
+
+                // сохранение состояния корзины в сессию корзины
+                Session["cart"] = cart;
+
+                // Возвращение частичного представления с моделью
+                return PartialView("_AddToCartPartial", model);
+            }
         }
     }
 }

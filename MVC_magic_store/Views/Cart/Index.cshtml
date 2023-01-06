@@ -18,7 +18,7 @@ else
                 Image
             </th>
             <th>
-                ProductName
+                Name
             </th>
             <th>
                 Quantity
@@ -47,9 +47,9 @@ else
                     @Html.DisplayFor(modelItem => item.Price)
                 </td>
                 <td>
-                    <a href="#" class="incproduct" data-id="@item.ProductId">+</a>
-                    <a href="#" class="decproduct" data-id="@item.ProductId">-</a>
-                    <a href="#" class="removeproduct" data-id="@item.ProductId">Remove</a>
+                    <a href="#" class="btn incproduct" data-id="@item.ProductId">+</a>
+                    <a href="#" class="btn decproduct" data-id="@item.ProductId">-</a>
+                    <a href="#" class="btn removeproduct" data-id="@item.ProductId">Remove</a>
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Total)
@@ -63,7 +63,7 @@ else
             <td></td>
             <td></td>
             <td></td>
-            <td>@ViewBag.GrandTotal</td>
+            <td class="grandtotal"><b>Grand total:</b><span>@ViewBag.GrandTotal</span></td>
         </tr>
     </table>
 }
