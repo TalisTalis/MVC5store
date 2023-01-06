@@ -169,7 +169,7 @@ namespace MVC_magic_store.Controllers
         }
 
         // метод увеличения количества товара в корзине
-        // GET: Cart/IcrementProduct
+        // GET: Cart/IncrementProduct
         public JsonResult IncrementProduct(int productId)
         {
             // план:
@@ -192,11 +192,76 @@ namespace MVC_magic_store.Controllers
                 model.Quantity++;
 
                 // Сохраняем данные
-                // призваиваем значения
+                // присваиваем значения
                 var result = new { qty = model.Quantity, price = model.Price };
 
                 // возвращаем данные json ом поэтому доп параметром нужно разрешить передачу
                 return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // метод уменьшения количества товара в корзине
+        // GET: Cart/DecrementProduct
+        public ActionResult DecrementProduct (int productId)
+        {
+            // план:
+            // объявить лист cartVM
+            // получение модели из листа
+            // убавить количество товара
+            // сохранить данные
+            // вернуть ответ с данными
+
+            // объявление листа cartVM
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            // подключение к БД
+            using (DB db = new DB())
+            {
+                // получение модели из листа
+                CartVM model = cart.FirstOrDefault(x => x.ProductId == productId);
+
+                // убавить количество
+                // проверка на количество товара
+                if (model.Quantity > 1)
+                {
+                    model.Quantity--;
+                }
+                else
+                {
+                    // количество товара на 0
+                    model.Quantity = 0;
+                    // удаление модели из корзины
+                    cart.Remove(model);
+                }
+
+                // Сохраняем данные
+                // присваиваем значения
+                var result = new { qty = model.Quantity, price = model.Price };
+
+                // возвращаем данные json ом поэтому доп параметром нужно разрешить передачу
+                return Json(result, JsonRequestBehavior.AllowGet);
+            }
+        }
+
+        // метод даления товара из корзины
+        public void RemoveProduct(int productId)
+        {
+            // план:
+            // объявить лист cartVM
+            // получение модели из листа
+            // удаление товара
+
+            // объявление листа cartVM
+            List<CartVM> cart = Session["cart"] as List<CartVM>;
+
+            // подключение к БД
+            using (DB db = new DB())
+            {
+                // получение модели из листа
+                CartVM model = cart.FirstOrDefault(x => x.ProductId == productId);
+
+                // удаление товара
+                cart.Remove(model);
             }
         }
     }

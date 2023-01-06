@@ -1,4 +1,6 @@
-﻿$(function(){
+﻿$(function () {
+
+    /* Increment product */
     $("a.incproduct").click(function (e) {
         e.preventDefault();
 
@@ -17,6 +19,49 @@
             var grandtotal = (gt + data.price).toFixed(2);
 
             $("td.grandtotal span").text(grandtotal);
+        });
+    });
+
+    /* Decrement */
+    $("a.decproduct").click(function (e) {
+        e.preventDefault();
+
+        var $this = $(this);
+        var productId = $(this).data("id");
+        var url = "/Cart/DecrementProduct";
+
+        $.getJSON(url, { productId: productId }, function (data) {
+            if (data.qty == 0) {
+                $this.parent().fadeOut("fast", function () {
+                    location.reload();
+                });
+            }
+            else {
+                $("td.qty" + productId).html(data.qty);
+
+                var price = data.qty * data.price;
+                var priceHtml = price.toFixed(2) + "";
+
+                $("td.total" + productId).html(priceHtml);
+
+                var qt = parseFloat($("td.grandtotal span").text());
+                var grandtotal = (qt - data.price).toFixed(2);
+
+                $("td.grandtotal span").text(grandtotal);
+            }
+        });
+    });
+
+    /* Remove */
+    $("a.removeproduct").click(function (e) {
+        e.preventDefault();
+
+        var $this = $(this);
+        var productId = $this.data("id");
+        var url = "/Cart/RemoveProduct";
+
+        $.get(url, { productId: productId }, function (data) {
+            location.reload();
         });
     });
 });
