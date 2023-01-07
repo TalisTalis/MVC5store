@@ -11,7 +11,7 @@ namespace MVC_magic_store.Controllers
         // GET: Account
         public ActionResult Index()
         {
-            return View();
+            return RedirectToAction("Login");
         }
 
         // GET: account/create-account
@@ -20,6 +20,28 @@ namespace MVC_magic_store.Controllers
         public ActionResult CreateAccount ()
         {
             return View("CreateAccount");
+        }
+
+        // GET: Account/Login
+        [HttpGet]
+        public ActionResult Login ()
+        {
+            // план:
+            // подтвердить что пользователь не авторизован
+            // возвращение представления
+
+            // подтверждение что не авторизован
+            // объявление и инициализация переменной именем текущего пользователя
+            string userName = User.Identity.Name;
+
+            // проверка если не пустая
+            if (!string.IsNullOrEmpty(userName))
+            {
+                return RedirectToAction("user-profile");
+            }
+
+            // возвращаем представление без модели
+            return View();
         }
     }
 }
