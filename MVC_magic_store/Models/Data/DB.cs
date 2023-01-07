@@ -25,5 +25,8 @@ namespace MVC_magic_store.Models.Data
 
         // подключение таблицы Roles
         public DbSet<RoleDTO> Roles { get; set; }
+
+        // подключение таблицы UserRoles
+        public DbSet<UserRoleDTO> UserRoles { get; set; }
     }
 }
