@@ -191,5 +191,40 @@ namespace MVC_magic_store.Controllers
 
             return RedirectToAction("Login");
         }
+
+        // метод обработки частичного представления usernavpartialvm
+        public ActionResult UserNavPartial()
+        {
+            // план:
+            // получение еимени пользователя
+            // объявление модели
+            // получение пользователя
+            // заполнение модели данными из контекста DTO
+            // возвращение частичного представления с моделью
+
+            // Получение имени пользователя
+            // объявление локальной переменной и инициализация 
+            string userName = User.Identity.Name;
+
+            // объявление модели VM
+            UserNavPartialVM model;
+
+            // подключение к БД
+            using (DB db = new DB())
+            {
+                // получение пользователя из БД
+                UserDTO dto = db.Users.FirstOrDefault(x => x.Username == userName);
+
+                // заполнение модели полученными из БД данными
+                model = new UserNavPartialVM()
+                {
+                    FirstName = dto.FirstName,
+                    LastName = dto.LastName
+                };
+            }
+
+            // возвращение частичного представления с моделью
+            return PartialView(model);
+        }
     }
 }

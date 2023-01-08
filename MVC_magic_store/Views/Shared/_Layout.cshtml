@@ -17,7 +17,42 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarText">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <!-- Вывод страниц -->
                     @Html.Action("PagesMenuPartial", "Pages")
+
+                    <!-- Если пользователь авторизован -->
+                    @if (Request.IsAuthenticated)
+                    {
+                        if (Request.IsAuthenticated)
+                        {
+                            <!-- Вывод частичного представления если пользователь авторизован -->
+                            <li>
+                                @Html.Action("UserNavPartial", "Account", new { area = "" })
+                            </li>
+                        }
+                        <li>
+                            @Html.ActionLink("Logout", "Logout", "Account", null, new { @class = "navbar-text nav-link", style = "text-decoration: none" })
+                            @*<a href="/account/logout">Logout</a>*@
+                        </li>
+                    }
+                    else
+                    {
+                        <!-- Если пользователь не авторизован но находится на странице логина -->
+                        if (ViewBag.Title == "Login")
+                        {
+                            <li class="navbar-text">
+                                @Html.ActionLink("Login", "Login", "Account", null, new { @class = "active", style = "text-decoration: none" })
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- Если пользователь не авторизован но не находится на странице логина -->
+                            <li class="navbar-text">
+                                @Html.ActionLink("Login", "Login", "Account", null, new { @class = "active", style = "text-decoration: none" })
+                            </li>
+                        }
+                    }
+
                 </ul>
                 <span class="navbar-text">
                     @Html.Action("CartPartial", "Cart")
